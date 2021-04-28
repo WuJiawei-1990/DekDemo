@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:id="@+id/fragment_apple_measure"
+android:background="@color/fragmentBack"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent">
+
+<LinearLayout
+    android:id="@+id/back_to_measure"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    android:layout_marginTop="55dp"
+    android:layout_marginLeft="20dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:clickable="true"
+    android:focusable="true">
+    <ImageView
+        android:layout_width="8dp"
+        android:layout_height="10dp"
+        android:src="@drawable/icon_back_color"
+        android:layout_gravity="center_vertical">
+    </ImageView>
+
+    <TextView
+        android:id="@+id/back_to_measure_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:textSize="12dp"
+        android:textColor="#007AFF"
+        android:layout_marginLeft="5dp">
+    </TextView>
+</LinearLayout>
+
+<TextView
+    android:id="@+id/apple"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toTopOf="@id/back_to_measure"
+    app:layout_constraintBottom_toBottomOf="@+id/back_to_measure"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    android:text="苹 果"
+    android:textColor="@color/colorAccent"
+    android:textSize="16dp"
+    android:textStyle="bold"/>
+
+<!--线-->
+<View
+    android:layout_width="50dp"
+    android:layout_height="2dp"
+    app:layout_constraintTop_toBottomOf="@+id/apple"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    android:background="@color/colorAccent"/>
+
+<ImageView
+    android:id="@+id/brix_result_photo"
+    android:layout_width="200dp"
+    android:layout_height="200dp"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    android:layout_marginTop="100dp"
+    android:src="@drawable/brix"/>
+
+<TextView
+    android:id="@+id/brix_title"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintBottom_toBottomOf="@+id/brix_result_photo"
+    app:layout_constraintLeft_toLeftOf="@+id/brix_result_photo"
+    app:layout_constraintRight_toRightOf="@+id/brix_result_photo"
+    android:layout_marginBottom="40dp"
+    android:text="Brix"
+    android:textStyle="italic|bold"
+    android:textSize="20dp"/>
+<TextView
+    android:id="@+id/brix_result"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toBottomOf="@+id/brix_title"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    android:layout_marginTop="5dp"
+    android:text="00.0%"
+    android:textSize="30dp"
+    android:textStyle="italic|bold"
+    android:textColor="#FF8C00"/>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/batch_of_fruit"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    app:layout_constraintTop_toBottomOf="@+id/brix_result"
+    android:layout_marginTop="20dp"
+    android:background="@color/white">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="20dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="测量记录"
+        android:textSize="12dp"
+        android:textColor="@color/word" />
+    <TextView
+        android:id="@+id/name_of_fruitsGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:text="水果批次信息 20210317"
+        android:textColor="@color/blue"
+        android:textStyle="bold"
+        android:textSize="14dp"/>
+    <TextView
+        android:id="@+id/creat_new_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@+id/name_of_fruitsGroup"
+        app:layout_constraintTop_toTopOf="@+id/name_of_fruitsGroup"
+        app:layout_constraintBottom_toBottomOf="@+id/name_of_fruitsGroup"
+        android:text="新增批次"
+        android:textSize="10dp"
+        android:textColor="#007AFF"
+        android:layout_marginLeft="10dp"/>
+    <ImageView
+        android:id="@+id/delete_group"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/delete"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="20dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+<ListView
+    android:id="@+id/result_list_view"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    app:layout_constraintTop_toBottomOf="@+id/batch_of_fruit"
+    android:layout_marginTop="10dp"
+    android:stackFromBottom="false"
+    android:background="@color/white"
+    android:clickable="false"
+    android:focusable="false">
+</ListView>
+<Button
+    android:id="@+id/send_date"
+    android:layout_width="300dp"
+    android:layout_height="60dp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    android:layout_marginBottom="60dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

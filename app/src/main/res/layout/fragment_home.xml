@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_home"
+    android:background="@color/fragmentBack"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.home.homeFragment">
+
+    <ImageView
+        android:id="@+id/banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/banner"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="40dp"
+        android:adjustViewBounds="true"/>
+
+    <RelativeLayout
+        android:id="@+id/bluetoothLayout"
+        app:layout_constraintTop_toBottomOf="@+id/banner"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/selector_relative"
+        android:clickable="true"
+        android:focusable="true">
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="63dp"
+            android:layout_marginTop="10dp"
+            android:text="Name:  "
+            android:textColor="@color/word"
+            android:textSize="12dp" />
+
+        <TextView
+            android:id="@+id/port_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_toRightOf="@id/name"
+            android:text="ZD-smart-apple"
+            android:textColor="@color/black"
+            android:textSize="16dp" />
+
+        <TextView
+            android:id="@+id/ble_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/name"
+            android:layout_marginLeft="63dp"
+            android:layout_marginTop="5dp"
+            android:text="未连接"
+            android:textStyle="normal"
+            android:textColor="@color/red"
+            android:textSize="12dp" />
+
+        <ImageView
+            android:id="@+id/example"
+            android:layout_width="35dp"
+            android:layout_height="55dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/dek"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/bluetooth"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/bluetooth"
+            android:visibility="visible" />
+    </RelativeLayout>
+    <!--嵌套一个LinerLayout用于按钮的线性布局-->
+    <LinearLayout
+        android:id="@+id/bottomLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:layout_constraintTop_toBottomOf="@+id/bluetoothLayout"
+        android:layout_marginTop="10dp">
+        <!--嵌套两层ConstraintLayout用于设置内部icon和文字的相对位置-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/selector_relative"
+            android:layout_marginRight="5dp"
+            android:clickable="true">
+            <ImageView
+                android:id="@+id/adjustIcon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/adjust"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_marginLeft="20dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="仪器校准"
+                android:textSize="16dp"
+                android:textColor="@color/black"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/adjustIcon"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/selector_relative"
+            android:layout_marginLeft="5dp"
+            android:clickable="true">
+            <ImageView
+                android:id="@+id/historyIcon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/history"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_marginLeft="20dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="历史记录"
+                android:textSize="16dp"
+                android:textColor="@color/black"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/historyIcon"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+    <ImageView
+        android:id="@+id/mesure_example"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:src="@drawable/measure_example"
+        app:layout_constraintTop_toBottomOf="@+id/bottomLayout1"
+        android:layout_marginTop="5dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="20dp"
+        app:layout_constraintRight_toLeftOf="@+id/result_example"/>
+    <ImageView
+        android:id="@+id/result_example"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:src="@drawable/chart"
+        app:layout_constraintTop_toBottomOf="@+id/bottomLayout1"
+        android:layout_marginTop="5dp"
+        app:layout_constraintLeft_toRightOf="@+id/mesure_example"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="20dp"/>
+    <ImageView
+        android:id="@+id/tipsIcon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/tipsicon"
+        app:layout_constraintTop_toBottomOf="@+id/result_example"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"/>
+    <TextView
+        android:id="@+id/tipsTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="使用说明"
+        android:textStyle="bold"
+        android:textSize="12dp"
+        android:textColor="@color/blue"
+        app:layout_constraintLeft_toRightOf="@id/tipsIcon"
+        app:layout_constraintTop_toTopOf="@+id/tipsIcon"
+        app:layout_constraintBottom_toBottomOf="@+id/tipsIcon"
+        android:layout_marginLeft="5dp"/>
+    <TextView
+        android:id="@+id/test_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/tipsTitle"
+        app:layout_constraintLeft_toLeftOf="@id/tipsTitle"
+        android:layout_marginTop="5dp"
+        android:text="将水果紧贴测试区；按下测量；查看结果"
+        android:textSize="12dp"
+        android:textColor="@color/word"/>
+
+    <RelativeLayout
+        android:id="@+id/start_measure"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="70dp"
+        android:background="@drawable/selector_relative"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="20dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/link" />
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/start"
+            android:layout_marginLeft="20dp"
+            android:layout_centerVertical="true"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="开始测量"
+            android:textSize="16dp"
+            android:textColor="@color/black"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/button_ob"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:layout_constraintBottom_toTopOf="@+id/start_measure"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/selector_relative"
+        android:clickable="true"
+        android:focusable="true">
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="20dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/link" />
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/show"
+            android:layout_marginLeft="20dp"
+            android:layout_centerVertical="true"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="光谱查看"
+            android:textSize="16dp"
+            android:textColor="@color/black"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/bluetoothBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal" />
+    <LinearLayout
+        android:id="@+id/bluetooth_container"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:layout_height="500dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bluetoothLayout"
+        android:orientation="horizontal" />
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,12 +1,17 @@
 package com.example.dekdemo.ui.history;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.dekdemo.DateBase.DateBaseHelper;
+import com.example.dekdemo.MainActivity;
 import com.example.dekdemo.R;
 
 import java.util.ArrayList;
@@ -41,11 +47,22 @@ public class historyFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private Button test;
-    private DateBaseHelper dateBaseHelper;
-    private SQLiteDatabase db_write,db_read;
     private TextView history_title,history_content;
+    private MainActivity mainActivity;
     private ExpandableListView expandableListView;
     private MyExpendableListViewAdapter myExpendableListViewAdapter= new MyExpendableListViewAdapter();
+    public Handler historyHander = new Handler(Looper.getMainLooper()){
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case 3 :
+                    if (msg.obj != null){
+                        refreshView(expandableListView);
+                    }
+            }
+        }
+    };
     public historyFragment() {
         // Required empty public constructor
     }
@@ -75,20 +92,22 @@ public class historyFragment extends Fragment {
         group_list.add("20210416 记录3");
         group_list.add("20210415 记录2");
         group_list.add("20210414 记录1");
-        child_item_list.add("12.1");
-        child_item_list.add("13.5");
-        child_list.add(child_item_list);
+//        child_item_list.add("12.1");
+//        child_item_list.add("13.5");
         child_list.add(child_item_list);
         child_list.add(new ArrayList<String>());
+        child_list.add(new ArrayList<String>());
         expandableListView.setAdapter(myExpendableListViewAdapter);
-        myExpendableListViewAdapter.notifyDataSetChanged();
+//        refreshView(expandableListView);
+//        myExpendableListViewAdapter.notifyDataSetChanged();
         test = (Button)getActivity().findViewById(R.id.add_test);
         test.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(),"add",Toast.LENGTH_SHORT).show();
-                child_item_list.add("add");
-                myExpendableListViewAdapter.notifyDataSetChanged();
+                Toast.makeText(getActivity(),"refresh",Toast.LENGTH_SHORT).show();
+//                child_item_list.add("add");
+                refreshView(expandableListView);
+//                myExpendableListViewAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -99,7 +118,6 @@ public class historyFragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
-            initDateBase();
         }
     }
 
@@ -110,14 +128,13 @@ public class historyFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_history, container, false);
     }
 
-
-
-    //数据库初始化
-    public void initDateBase(){
-        dateBaseHelper = new DateBaseHelper(getActivity(),"result_history",null,1);
-        db_write = dateBaseHelper.getWritableDatabase();
-        db_read = dateBaseHelper.getReadableDatabase();
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mainActivity = (MainActivity) getActivity();
+        mainActivity.setHistoryHandler(historyHander);
     }
+
     //ExpendListView适配器
     public class MyExpendableListViewAdapter extends BaseExpandableListAdapter{
         private static final String TAG = "ExpendListView";
@@ -184,6 +201,7 @@ public class historyFragment extends Fragment {
             }
             history_title.setText(group_list.get(groupPosition));
             Log.d(TAG, "getGroupView: start");
+            myExpendableListViewAdapter.notifyDataSetChanged();
             return convertView;
         }
 
@@ -204,7 +222,6 @@ public class historyFragment extends Fragment {
         public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
             if (convertView==null){
                 convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.history_child_item,parent,false);
-
                 history_content = (TextView)convertView.findViewById(R.id.history_content);
                 convertView.setTag(history_content);
             }else {
@@ -219,18 +236,20 @@ public class historyFragment extends Fragment {
             return false;
         }
     }
-    //将指定元素添加到指定数组（父级）
-    public String[] groupAdd(String ele , String[] group_arr){
-        String[] temp = new String[group_arr.length+1];
-        if ("".equals(group_arr[0])) {
-            group_arr[0] = ele;
-        }else{
-            for (int i = 0; i < temp.length - 1;i++){
-                temp[i] = group_arr[i];
+    //从数据库获取数据
+    public void refreshView(ExpandableListView expandableListView){
+        DateBaseHelper dateBaseHelper = new DateBaseHelper(getActivity(),"result_history",null,1);
+        SQLiteDatabase db_read = dateBaseHelper.getReadableDatabase();
+        Cursor cursor = db_read.rawQuery("select * from result_history",null);
+        child_item_list.clear();
+        while (cursor.moveToNext()){
+            String name = cursor.getString(cursor.getColumnIndex("name"));
+            String value = cursor.getString(cursor.getColumnIndex("value"));
+            if (name.equals("20210416 记录3")){
+                child_item_list.add(value);
+                myExpendableListViewAdapter.notifyDataSetChanged();
             }
-            temp[temp.length-1] = ele;
-            group_arr = temp;
         }
-        return group_arr;
+        cursor.close();
     }
 }

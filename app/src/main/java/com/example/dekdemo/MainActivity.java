@@ -66,9 +66,9 @@ public class MainActivity extends AppCompatActivity {
     private String TssToShow = null;
     private final static String TAG = "ACSMainActivity";
     private TextView port_name;
-    private Handler resultHandler,resultRecordHandler;
+    private Handler resultHandler,historyHandler;
     //数据库
-    private DateBaseHelper dateBaseHelper;
+    public  DateBaseHelper dateBaseHelper;
     private SQLiteDatabase db_write,db_read;
     private final static int REQUEST_ENABLE_BT = 11;
     public final static int REQUEST_LOCATION_PERMISSION = 100;
@@ -223,6 +223,13 @@ public class MainActivity extends AppCompatActivity {
                         msg.what = 2;
                         msg.obj = TssToShow;
                         resultHandler.sendMessage(msg);
+                        //添加至数据库
+                        addSQL((String) msg.obj);
+
+                        Message msgHistory = new Message();
+                        msgHistory.what = 3;
+                        msgHistory.obj = TssToShow;
+                        historyHandler.sendMessage(msgHistory);
                         //runOnUiThread(() -> updateUiObject());wjw
                     }
                 }
@@ -401,12 +408,22 @@ public class MainActivity extends AppCompatActivity {
         return mHandler;
     }
 
-    public void setHandler(Handler handler) {
+    public void setResultHandler(Handler handler) {
         resultHandler = handler;
+    }
+    public void setHistoryHandler(Handler handler) {
+        historyHandler = handler;
     }
     public void initDateBase(){
         dateBaseHelper = new DateBaseHelper(MainActivity.this,"result_history",null,1);
         db_write = dateBaseHelper.getWritableDatabase();
         db_read = dateBaseHelper.getReadableDatabase();
+    }
+    private void addSQL(String result) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("name","20210416 记录3");
+        contentValues.put("value",result);
+        db_write.insert("result_history",null , contentValues);
+        Log.d(TAG, "add: 成功");
     }
 }

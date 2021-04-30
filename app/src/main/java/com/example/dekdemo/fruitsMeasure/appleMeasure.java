@@ -149,7 +149,7 @@ public class appleMeasure extends Fragment {
             public void onClick(View v) {
                 Log.d("appleMeasure","开启光谱计");
                 //发送光谱计开启信号
-                sendData("2");
+                sendData("s");
                 progressDialog().show();
 //                TimerTask timerTask = new TimerTask() {
 //                    @Override
@@ -201,8 +201,6 @@ public class appleMeasure extends Fragment {
             switch (msg.what){
                 case 2 :
                     progressDialog().cancel();
-                    //添加至数据库
-                    addSQL((String) msg.obj);
                     if (msg.obj != null){
                         brix_result.setText((String) msg.obj);
                         arrayList.add(0,(String)msg.obj);
@@ -224,7 +222,7 @@ public class appleMeasure extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         mainActivity = (MainActivity) getActivity();
-        mainActivity.setHandler(resultHandler);
+        mainActivity.setResultHandler(resultHandler);
     }
 
     public class ResultListViewAdapter extends BaseAdapter{
@@ -308,13 +306,6 @@ public class appleMeasure extends Fragment {
         dateBaseHelper = new DateBaseHelper(getActivity(), "result_history", null, 1);
         db_write = dateBaseHelper.getWritableDatabase();
         db_read = dateBaseHelper.getReadableDatabase();
-    }
-    private void addSQL(String result) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("name","key");
-        contentValues.put("value",result);
-        db_write.insert("result_history",null,contentValues);
-        Log.d(TAG, "add: 成功");
     }
     public void sendModelDate(int date){
         byte[] temp = new byte[4];

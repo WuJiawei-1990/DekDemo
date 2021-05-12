@@ -225,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
                         resultHandler.sendMessage(msg);
                         //添加至数据库
                         addSQL((String) msg.obj);
-
+                        //通知历史记录界面更新
                         Message msgHistory = new Message();
                         msgHistory.what = 3;
                         msgHistory.obj = TssToShow;

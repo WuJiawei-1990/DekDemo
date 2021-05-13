@@ -1,9 +1,11 @@
 package com.example.dekdemo;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -24,7 +26,13 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
     private SQLiteDatabase db_write,db_read;
     private final static int REQUEST_ENABLE_BT = 11;
     public final static int REQUEST_LOCATION_PERMISSION = 100;
+    public DrawerLayout drawerLayout;
+    public ImageView mLeftMenu;
     private BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -278,6 +288,15 @@ public class MainActivity extends AppCompatActivity {
         transaction.hide(mStartMeasureFrament);
         transaction.show(mHomeFragment);
         transaction.commit();
+
+        drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+        mLeftMenu = (ImageView)findViewById(R.id.leftMenu);
+        mLeftMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.openDrawer(Gravity.LEFT);
+            }
+        });
 
         //权限获取
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

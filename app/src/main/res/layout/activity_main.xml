@@ -130,6 +130,14 @@
             android:textColor="@color/black"
             android:gravity="center"
             android:layout_marginTop="20dp" />
+        <TextView
+            android:id="@+id/privacyAgreement"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:text="隐私协议"
+            android:textColor="@color/blue2"
+            android:gravity="center"
+            android:layout_marginTop="20dp"/>
     </LinearLayout>
 
 </androidx.drawerlayout.widget.DrawerLayout>

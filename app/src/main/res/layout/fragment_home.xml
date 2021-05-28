@@ -114,12 +114,14 @@
                 app:layout_constraintEnd_toEndOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/history_Layout"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:background="@drawable/selector_relative"
             android:layout_marginLeft="5dp"
-            android:clickable="true">
+            android:clickable="true"
+            android:focusable="true">
             <ImageView
                 android:id="@+id/historyIcon"
                 android:layout_width="20dp"

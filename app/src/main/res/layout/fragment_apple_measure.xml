@@ -137,13 +137,6 @@
             android:textColor="@color/blue"
             android:textStyle="bold"
             android:textSize="14dp"/>
-        <Button
-            android:id="@+id/test_A"
-            android:text="A"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
         <TextView
             android:id="@+id/creat_new_group"
             android:layout_width="wrap_content"

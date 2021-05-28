@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
@@ -32,11 +33,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
  */
 public class homeFragment extends Fragment {
     //蓝牙Layout
-    RelativeLayout mBluetoothLayout;
+    private RelativeLayout mBluetoothActivity;
     //开始测量
-    RelativeLayout mStartMeasure;
+    private RelativeLayout mStartMeasure;
     //查看光谱
-    RelativeLayout mOb;
+    private RelativeLayout mOb;
+    //历史记录
+    private ConstraintLayout mHistory;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -100,9 +103,7 @@ public class homeFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mStartMeasure = (RelativeLayout)getActivity().findViewById(R.id.start_measure);
-        mBluetoothLayout = (RelativeLayout) getActivity().findViewById(R.id.bluetoothLayout);
-        mOb = (RelativeLayout)getActivity().findViewById(R.id.button_ob);
+        initView();
         mStartMeasure.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -117,7 +118,19 @@ public class homeFragment extends Fragment {
                 }).start();
             }
         });
-        mBluetoothLayout.setOnClickListener(new View.OnClickListener() {
+        mHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Message msg = mHandler.obtainMessage(2);
+                        mHandler.sendMessage(msg);
+                    }
+                }).start();
+            }
+        });
+        mBluetoothActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getActivity(), "我是蓝牙", Toast.LENGTH_SHORT).show();
@@ -133,5 +146,11 @@ public class homeFragment extends Fragment {
 
             }
         });
+    }
+    private void initView(){
+        mStartMeasure = (RelativeLayout)getActivity().findViewById(R.id.start_measure);
+        mBluetoothActivity = (RelativeLayout) getActivity().findViewById(R.id.bluetoothLayout);
+        mOb = (RelativeLayout)getActivity().findViewById(R.id.button_ob);
+        mHistory = (ConstraintLayout) getActivity().findViewById(R.id.history_Layout);
     }
 }

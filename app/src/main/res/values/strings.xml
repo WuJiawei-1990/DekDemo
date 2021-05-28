@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DekDemo</string>
+    <string name="app_name">Dekfeller</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 
@@ -101,4 +101,5 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="draw_open">1</string>
     <string name="draw_close">0</string>
+    <string name="sure">同意</string>
 </resources>

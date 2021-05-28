@@ -56,11 +56,9 @@ public class appleMeasure extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private static final String TAG = "appleMeasure";
-    private Button test_A;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private TextView back_text;
     private LinearLayout backToStartFragment;
     private ListView resultListView;
     //item
@@ -69,7 +67,6 @@ public class appleMeasure extends Fragment {
     private TextView brix_result;
     //指针
     private ImageView point;
-    private Timer timer = new Timer();
     private RelativeLayout send_date;
     private ImageView delete_date;
     private MainActivity mainActivity;
@@ -183,15 +180,6 @@ public class appleMeasure extends Fragment {
                     transaction.commit();
             }
         });
-        //测试A
-        test_A = (Button)getActivity().findViewById(R.id.test_A);
-        test_A.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendData("A");
-            }
-        });
-
     }
     //接收到糖度值显示
     public Handler resultHandler = new Handler(Looper.getMainLooper()){

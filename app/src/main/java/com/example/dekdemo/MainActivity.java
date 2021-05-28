@@ -18,9 +18,12 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -32,10 +35,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.dekdemo.DateBase.DateBaseHelper;
 import com.example.dekdemo.Spectra.BitConverter;
@@ -51,6 +57,8 @@ import static com.example.dekdemo.ui.home.homeFragment.REQUEST_ENUM_PORTS;
 public class MainActivity extends AppCompatActivity {
     private BottomNavigationView navigationView;
     private TextView mBleStatus;//蓝牙连接状态
+    private TextView port_name;
+    private TextView privacyAgreement;
     //创建三个fragment实例
     private Fragment mHomeFragment = new homeFragment();
     private Fragment mHistoryFrament = new historyFragment();
@@ -73,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
     private double PreTSS = 0;
     private String TssToShow = null;
     private final static String TAG = "ACSMainActivity";
-    private TextView port_name;
     private Handler resultHandler,historyHandler;
     //数据库
     public  DateBaseHelper dateBaseHelper;
@@ -82,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
     public final static int REQUEST_LOCATION_PERMISSION = 100;
     public DrawerLayout drawerLayout;
     public ImageView mLeftMenu;
+    public String isAgreementAccepted = null;
     private BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -129,8 +137,14 @@ public class MainActivity extends AppCompatActivity {
             super.handleMessage(msg);
             switch (msg.what){
                 case 1:
-                    Log.d("MainActivity","接收到handler");
+                    Log.d("MainActivity","接收到handler 1");
                     navigationView.setSelectedItemId(R.id.startMeasure);
+                    break;
+
+                case 2:
+                    Log.d("MainActivity", "接收到handler 2");
+                    navigationView.setSelectedItemId(R.id.history);
+                    break;
             }
         }
     };
@@ -278,26 +292,11 @@ public class MainActivity extends AppCompatActivity {
         this.getSupportActionBar().hide();
         //初始化数据库
         initDateBase();
-        navigationView = (BottomNavigationView) findViewById(R.id.nav_view);
-        navigationView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener);
-        FragmentTransaction transaction = fm.beginTransaction();
-        transaction.add(R.id.fragmentContainer,mStartMeasureFrament);
-        transaction.add(R.id.fragmentContainer,mHistoryFrament);
-        transaction.add(R.id.fragmentContainer,mHomeFragment);
-        transaction.hide(mHistoryFrament);
-        transaction.hide(mStartMeasureFrament);
-        transaction.show(mHomeFragment);
-        transaction.commit();
-
-        drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
-        mLeftMenu = (ImageView)findViewById(R.id.leftMenu);
-        mLeftMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                drawerLayout.openDrawer(Gravity.LEFT);
-            }
-        });
-
+        initView();
+        //隐私协议
+        if (!getAgreementStatus()){
+            showAgreementDialog();
+        }
         //权限获取
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
@@ -438,11 +437,119 @@ public class MainActivity extends AppCompatActivity {
         db_write = dateBaseHelper.getWritableDatabase();
         db_read = dateBaseHelper.getReadableDatabase();
     }
+    public void initView(){
+        navigationView = (BottomNavigationView) findViewById(R.id.nav_view);
+        navigationView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener);
+        FragmentTransaction transaction = fm.beginTransaction();
+        transaction.add(R.id.fragmentContainer,mStartMeasureFrament);
+        transaction.add(R.id.fragmentContainer,mHistoryFrament);
+        transaction.add(R.id.fragmentContainer,mHomeFragment);
+        transaction.hide(mHistoryFrament);
+        transaction.hide(mStartMeasureFrament);
+        transaction.show(mHomeFragment);
+        transaction.commit();
+        initLeftMenu();
+    }
+    public void initLeftMenu(){
+        drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+        privacyAgreement = (TextView)findViewById(R.id.privacyAgreement);
+        privacyAgreement.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);//下划线
+        privacyAgreement.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.closeDrawer(Gravity.LEFT);
+                showPrivacyAgreementDialog();
+            }
+        });
+        mLeftMenu = (ImageView)findViewById(R.id.leftMenu);
+        mLeftMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.openDrawer(Gravity.LEFT);
+            }
+        });
+    }
+
     private void addSQL(String result) {
         ContentValues contentValues = new ContentValues();
         contentValues.put("name","20210416 记录3");
         contentValues.put("value",result);
         db_write.insert("result_history",null , contentValues);
         Log.d(TAG, "add: 成功");
+    }
+    private void addAgreementStatus(String isAgreementAccepted){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("name","AgreementStatus");
+        contentValues.put("value",isAgreementAccepted);
+        db_write.insert("result_history",null , contentValues);
+        Log.d(TAG, "addAgreementStatus: 1");
+    }
+    public boolean getAgreementStatus(){
+        boolean status = false;
+        Cursor cursor = db_read.rawQuery("select * from result_history",null);
+        while (cursor.moveToNext()){
+            String name = cursor.getString(cursor.getColumnIndex("name"));
+            String value = cursor.getString(cursor.getColumnIndex("value"));
+            if (name.equals("AgreementStatus")){
+                if (value.equals("1")){
+                    status = true;
+                }
+            }
+        }
+        cursor.close();
+        return status;
+    }
+    private void showPrivacyAgreementDialog() {
+        new MaterialDialog.Builder(this)
+                .title("隐私协议")
+                .content("本应用尊重并保护所有使用服务用户的个人隐私权。本应用不会将这些信息对外披露或向第三方提供。本应用会不时更新本隐私权政策。 您在同意本应用服务使用协议之时，即视为您已经同意本隐私权政策全部内容。本隐私权政策属于本应用服务使用协议不可分割的一部分" + "\n"
+                        + "1. 适用范围" +"\n"
+                        + "(a) 在您使用本应用进行蓝牙搜索和连接时，本应用自动接收并记录的您附近的蓝牙设备地址" + "\n"
+                        + "(b) 在您使用本设备进行数据测量时，本应用会自动将数据记录在您的当前设备"
+                        + "(c) 违反法律规定或违反本应用规则行为及本应用已对您采取的措施" + "\n"
+                        + "2. 信息使用" +"\n"
+                        + "(a) 本应用不会向任何无关第三方提供、出售、出租、分享或交易您的个人信息" + "\n"
+                        + "(b) 本应用亦不允许任何第三方以任何手段收集、编辑、出售或者无偿传播您的个人信息" + "\n"
+                        + "3. 信息存储和交换" +"\n"
+                        + "本应用收集的有关您的信息和资料将保存在本应用上，这些信息和资料只供您自己存储和展示。" +"\n"
+                        + "4. 本隐私政策的更改" +"\n"
+                        + "根据应用功能修改保留随时修改本政策的权利，因此请经常查看，如有重大更改，将在更新app之后以通知形式传达" +"\n"
+                        + "请您妥善保护自己的个人信息，仅在必要的情形下向他人提供。如您发现自己的个人信息泄密，请您立即联络邮箱jwwu@zd-smart.com，以便本应用采取相应措施。")
+                .positiveText("确定")
+                .positiveColor(getResources().getColor(R.color.colorAccent))
+                .show();
+    }
+    //隐私协议弹窗
+    public void showAgreementDialog(){
+        new MaterialDialog.Builder(this)
+                .title("隐私政策")
+                .content("请你务必审慎阅读、充分理解“隐私政策”各条款，包括但不限于：为了向你提供检测服务，我们需要收集你的设备信息、启用蓝牙服务、保存数据等。你可以在设置中查看、变更并管理你的授权。" +
+                        "你可阅读《隐私政策》了解详细信息。如你同意，请选中“同意”开始接受我们的服务。")
+                .contentColor(getResources().getColor(R.color.word))
+                .positiveText("确认")
+                .positiveColor(getResources().getColor(R.color.colorAccent))
+                .checkBoxPrompt("同意", false, new CheckBox.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if (!isChecked){
+                            Toast.makeText(MainActivity.this,"请先同意协议",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .canceledOnTouchOutside(false)
+                .autoDismiss(false)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        if (!dialog.isPromptCheckBoxChecked()){
+                            Toast.makeText(MainActivity.this,"请先同意协议",Toast.LENGTH_SHORT).show();
+                        }else {
+                            dialog.dismiss();
+                            isAgreementAccepted = "1";
+                            addAgreementStatus(isAgreementAccepted);
+                        }
+                    }
+                })
+                .show();
     }
 }

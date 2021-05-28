@@ -46,7 +46,6 @@ public class historyFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private Button test;
     private TextView history_title,history_content;
     private MainActivity mainActivity;
     private ExpandableListView expandableListView;
@@ -100,16 +99,6 @@ public class historyFragment extends Fragment {
         expandableListView.setAdapter(myExpendableListViewAdapter);
 //        refreshView(expandableListView);
 //        myExpendableListViewAdapter.notifyDataSetChanged();
-        test = (Button)getActivity().findViewById(R.id.add_test);
-        test.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getActivity(),"refresh",Toast.LENGTH_SHORT).show();
-//                child_item_list.add("add");
-                refreshView(expandableListView);
-//                myExpendableListViewAdapter.notifyDataSetChanged();
-            }
-        });
     }
 
     @Override

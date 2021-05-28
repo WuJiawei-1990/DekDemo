@@ -3,6 +3,14 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        releaseConfig {
+            storeFile file('D:\\androidcodes\\DEKFELLER.jks')
+            storePassword '000000'
+            keyAlias 'android'
+            keyPassword '000000'
+        }
+    }
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
 

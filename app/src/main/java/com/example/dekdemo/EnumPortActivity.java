@@ -167,7 +167,10 @@ public class EnumPortActivity extends AppCompatActivity {
         //devRssiValues.put(device.getAddress(), rssi);
         if (!deviceFound) {
             mEmptyList.setVisibility(View.GONE);
-            deviceList.add(device);
+            //剔除只有地址没有名字的蓝牙空设备
+            if (device.getName() != null && !device.getName().equals("")){
+                deviceList.add(device);
+            }
             deviceAdapter.notifyDataSetChanged();
         }
     }

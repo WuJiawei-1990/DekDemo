@@ -189,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
             if (getProgressDialog().isShowing()) {
                 getProgressDialog().dismiss();
             }
-            Toast.makeText(MainActivity.this, "Disconnected from Peripheral", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "设备连接已断开", Toast.LENGTH_SHORT).show();
             runOnUiThread(() -> {
                 // TODO Auto-generated method stub
                 //updateUiObject(); wjw

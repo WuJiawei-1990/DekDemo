@@ -25,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.dekdemo.bluetoothlib.ACSUtility;
 import com.example.dekdemo.bluetoothlib.ACSUtility.blePort;
+import com.example.dekdemo.bluetoothlib.ACSUtilityService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -120,6 +121,7 @@ public class EnumPortActivity extends AppCompatActivity {
         cancelButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                utility.closeACSUtility();
                 finish();
             }
         });
@@ -192,6 +194,7 @@ public class EnumPortActivity extends AppCompatActivity {
             Intent result = new Intent();
             result.putExtras(b);
             setResult(Activity.RESULT_OK, result);
+            utility.closeACSUtility();
             finish();
         }
     };

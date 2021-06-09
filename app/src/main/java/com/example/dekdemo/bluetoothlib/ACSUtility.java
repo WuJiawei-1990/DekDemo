@@ -247,6 +247,7 @@ public class ACSUtility extends Object{
         Intent intent = new Intent();
         intent.setClass(context, ACSUtilityService.class);
         context.stopService(intent);
+        Log.d(tag, "closeACSUtility: close");
     }
 
     //utility

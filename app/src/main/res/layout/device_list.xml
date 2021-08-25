@@ -32,12 +32,15 @@
 
     <Button
         android:id="@+id/btn_cancel"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_width="350dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="60dp"
+        android:layout_marginBottom="5dp"
         android:textColor="@color/black"
         android:text="取消连接"
         android:textSize="16dp"
-        android:background="@color/white_pressed"
+        android:backgroundTint="@color/fragmentBack"
+
         />
 
 </LinearLayout>

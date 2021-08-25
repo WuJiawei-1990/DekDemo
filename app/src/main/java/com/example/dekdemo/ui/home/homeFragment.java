@@ -49,7 +49,7 @@ public class homeFragment extends Fragment {
     private String mParam2;
     private static final int REQUEST_ENABLE_BT = 2;
     public static int REQUEST_ENUM_PORTS =10;
-    Handler mHandler;
+    public Handler mHandler;
     public homeFragment() {
         // Required empty public constructor
     }
@@ -134,6 +134,7 @@ public class homeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getActivity(), "我是蓝牙", Toast.LENGTH_SHORT).show();
+
                 //跳转activity
                 Intent intent = new Intent(getActivity(), EnumPortActivity.class);
                 //startActivity(intent);

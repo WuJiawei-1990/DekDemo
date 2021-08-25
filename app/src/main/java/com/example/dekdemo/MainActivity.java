@@ -307,46 +307,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // TODO Auto-generated method stub
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_ENUM_PORTS
-                && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_ENUM_PORTS && resultCode == Activity.RESULT_OK) {
             Bundle bundle = data.getExtras();
             BluetoothDevice device = bundle.getParcelable(BluetoothDevice.EXTRA_DEVICE);
             mSelectedPort = util.new blePort(device);
-            //util = new ACSUtility(this, userCallback);
-            //util.setUserCallback(userCallback);
-            //updateUiObject(); wjw
-            //port_name.setText(mSelectedPort._device.getName());
-            if (!isPortOpen){
+            if (!isPortOpen && mSelectedPort != null){
                 //选中蓝牙设备则在fragment中显示蓝牙名称
-                if (mSelectedPort != null) {
-                    port_name.setText(mSelectedPort._device.getName());
-                    util.openPort(mSelectedPort);
-                }
-            }
-            //返回进行连接蓝牙
-            if (isPortOpen) {
-                util.closePort(); //点击同样的蓝牙item则会关闭
-                isPortOpen = false;
-            } else if (isPortOpen == false && mSelectedPort != null) {
+                port_name.setText(mSelectedPort._device.getName());
                 getProgressDialog().show();
                 util.openPort(mSelectedPort);
                 isPortOpen = true;
-
-//                connect = findViewById(R.id.connect);
-//                connect.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        getProgressDialog().show();
-//                        util.openPort(mSelectedPort);
-//                        isPortOpen = true;
-//                    }
-//                });
             } else {
                 Log.i(TAG, "User didn't select a port...So the port won't be opened...");
                 Toast.makeText(this, "Please select a port first!", Toast.LENGTH_SHORT).show();
             }
-
         } else if (requestCode == REQUEST_ENABLE_BT) {
             final BluetoothManager bluetoothManager =
                     (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);

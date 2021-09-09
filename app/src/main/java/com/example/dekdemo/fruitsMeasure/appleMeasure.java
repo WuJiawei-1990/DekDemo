@@ -39,6 +39,7 @@ import com.example.dekdemo.bluetoothlib.ACSUtility;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -73,6 +74,7 @@ public class appleMeasure extends Fragment {
     private ResultListViewAdapter resultListViewAdapter;
     private DateBaseHelper dateBaseHelper;
     private SQLiteDatabase db_write,db_read;
+
     public appleMeasure() {
         // Required empty public constructor
     }
@@ -280,7 +282,7 @@ public class appleMeasure extends Fragment {
         if (materialDialog != null){
             return materialDialog ;
         }
-        materialDialog = new MaterialDialog.Builder(getActivity())
+        materialDialog = new MaterialDialog.Builder(Objects.requireNonNull(getActivity()))
                 .content("测量中...")
                 .contentColor(getResources().getColor(R.color.white))
                 .backgroundColorRes(R.color.alpha_black_70)

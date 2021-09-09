@@ -113,7 +113,6 @@ public class EnumPortActivity extends AppCompatActivity {
         this.getSupportActionBar().hide();
         mEmptyList = (TextView) findViewById(R.id.empty);
         Button cancelButton = (Button) findViewById(R.id.btn_cancel);
-
         utility = new ACSUtility(this, userCallback);//实例化ACSUtility
 
         utilAvaliable = false;
@@ -121,14 +120,13 @@ public class EnumPortActivity extends AppCompatActivity {
         cancelButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                utility.closeACSUtility();
+                //utility.closeACSUtility();
+                //utility.unBindService(EnumPortActivity.this);
                 finish();
             }
         });
-
         populateList();
     }
-
 
     private void populateList() {
         /* Initialize device list container */
@@ -207,6 +205,7 @@ public class EnumPortActivity extends AppCompatActivity {
         if (utilAvaliable) {
             //utility.setUserCallback(null);
             utility.stopEnum();
+            utility.unBindService(EnumPortActivity.this);
             //utility.closeACSUtility();//在MainActivity中即可 wjw
         }
     }

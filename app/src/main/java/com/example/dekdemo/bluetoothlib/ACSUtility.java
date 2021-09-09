@@ -40,7 +40,7 @@ public class ACSUtility extends Object{
     private static ACSUtilityService mService;
 
     private static IACSUtilityCallback userCallback;
-
+    private boolean isConnect = false;
     public ACSUtility(){
         Log.d(tag, "ACS Utility Constructor");
     }
@@ -63,9 +63,16 @@ public class ACSUtility extends Object{
         Intent intent = new Intent();
         intent.setClass(context, ACSUtilityService.class);
         context.startService(intent);
-        context.bindService(intent, conn, Context.BIND_AUTO_CREATE);
+        isConnect = context.bindService(intent, conn, Context.BIND_AUTO_CREATE);
     }
-
+    //解绑:wjw
+    public void unBindService(Context context){
+        Log.d(tag, "unBindService() ");
+        if (isConnect){
+            context.unbindService(conn);
+            isConnect = false;
+        }
+    }
     private ServiceConnection conn = new ServiceConnection() {
 
         @Override
@@ -243,7 +250,11 @@ public class ACSUtility extends Object{
         mService.close();
         //closePort();
         mService.removeEventHandler();
-        context.unbindService(conn);
+        if (isConnect){
+            context.unbindService(conn);
+            isConnect = false;
+        }
+
         Intent intent = new Intent();
         intent.setClass(context, ACSUtilityService.class);
         context.stopService(intent);

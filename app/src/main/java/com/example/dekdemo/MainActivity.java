@@ -31,6 +31,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -42,6 +43,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.dekdemo.DateBase.DateBaseHelper;
 import com.example.dekdemo.Spectra.BitConverter;
@@ -52,6 +54,8 @@ import com.example.dekdemo.ui.home.homeFragment;
 import com.example.dekdemo.ui.startMeasure.startFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.Objects;
+
 import static com.example.dekdemo.ui.home.homeFragment.REQUEST_ENUM_PORTS;
 
 public class MainActivity extends AppCompatActivity {
@@ -61,8 +65,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView privacyAgreement;
     //创建三个fragment实例
     private Fragment mHomeFragment = new homeFragment();
-    private Fragment mHistoryFrament = new historyFragment();
-    private Fragment mStartMeasureFrament = new startFragment();
+    private Fragment mHistoryFragment = new historyFragment();
+    private Fragment mStartMeasureFragment = new startFragment();
     //定义FragmentManager
     private FragmentManager fm = getSupportFragmentManager();
     private ACSUtility util;
@@ -80,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
     private int RcvIndex = 0;
     private double PreTSS = 0;
     private String TssToShow = null;
-    private final static String TAG = "ACSMainActivity";
+    private final static String TAG = "MainActivity";
     private Handler resultHandler,historyHandler;
     //数据库
     public  DateBaseHelper dateBaseHelper;
@@ -90,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
     public DrawerLayout drawerLayout;
     public ImageView mLeftMenu;
     public String isAgreementAccepted = null;
+
     private BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -98,29 +103,29 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("home","click");
                     if (!mHomeFragment.isVisible()){
                         FragmentTransaction transaction = fm.beginTransaction();
-                        transaction.hide(mHistoryFrament);
-                        transaction.hide(mStartMeasureFrament);
+                        transaction.hide(mHistoryFragment);
+                        transaction.hide(mStartMeasureFragment);
                         transaction.show(mHomeFragment);
                         transaction.commit();
                     }
                     break;
                 case R.id.startMeasure:
                     Log.d("startMeasure","click");
-                    if (!mStartMeasureFrament.isVisible()){
+                    if (!mStartMeasureFragment.isVisible()){
                         FragmentTransaction transaction = fm.beginTransaction();
-                        transaction.hide(mHistoryFrament);
+                        transaction.hide(mHistoryFragment);
                         transaction.hide(mHomeFragment);
-                        transaction.show(mStartMeasureFrament);
+                        transaction.show(mStartMeasureFragment);
                         transaction.commit();
                     }
                     break;
                 case R.id.history:
                     Log.d("history","click");
-                    if (!mHistoryFrament.isVisible()){
+                    if (!mHistoryFragment.isVisible()){
                         FragmentTransaction transaction = fm.beginTransaction();
                         transaction.hide(mHomeFragment);
-                        transaction.hide(mStartMeasureFrament);
-                        transaction.show(mHistoryFrament);
+                        transaction.hide(mStartMeasureFragment);
+                        transaction.show(mHistoryFragment);
                         transaction.commit();
                     }
                     break;
@@ -301,6 +306,7 @@ public class MainActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
         }
+        Log.d(TAG, "onCreate: ");
     }
 
     @Override
@@ -347,12 +353,14 @@ public class MainActivity extends AppCompatActivity {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
+        Log.d(TAG, "onResume: ");
     }
     @Override
     protected void onDestroy() {
         // TODO Auto-generated method stub
         super.onDestroy();
         util.closeACSUtility();
+        Log.d(TAG, "onDestroy: ");
     }
 
     private void showSuccessDialog() {
@@ -415,11 +423,11 @@ public class MainActivity extends AppCompatActivity {
         navigationView = (BottomNavigationView) findViewById(R.id.nav_view);
         navigationView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener);
         FragmentTransaction transaction = fm.beginTransaction();
-        transaction.add(R.id.fragmentContainer,mStartMeasureFrament);
-        transaction.add(R.id.fragmentContainer,mHistoryFrament);
+        transaction.add(R.id.fragmentContainer,mStartMeasureFragment);
+        transaction.add(R.id.fragmentContainer,mHistoryFragment);
         transaction.add(R.id.fragmentContainer,mHomeFragment);
-        transaction.hide(mHistoryFrament);
-        transaction.hide(mStartMeasureFrament);
+        transaction.hide(mHistoryFragment);
+        transaction.hide(mStartMeasureFragment);
         transaction.show(mHomeFragment);
         transaction.commit();
         initLeftMenu();
@@ -525,5 +533,29 @@ public class MainActivity extends AppCompatActivity {
                     }
                 })
                 .show();
+    }
+    //检测用户返回
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK){
+            new MaterialDialog.Builder(this)
+                    .content("确定要退出吗？")
+                    .contentColorRes(R.color.black)
+                    .positiveText("确定")
+                    .positiveColor(getResources().getColor(R.color.red))
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            util.closeACSUtility();
+                            finish();//结束当前Activity
+                            finishActivity(REQUEST_ENABLE_BT);
+                        }
+                    })
+                    .negativeText("取消")
+                    .negativeColor(getResources().getColor(R.color.colorAccent))
+                    .canceledOnTouchOutside(false)
+                    .show();
+        }
+        return false;
     }
 }

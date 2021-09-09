@@ -99,7 +99,7 @@ public class ACSUtilityService extends Service {
         }
     }
 
-    ;
+
     private IBinder binder = new ACSBinder();
 
     @Override
@@ -551,6 +551,7 @@ public class ACSUtilityService extends Service {
     public void onDestroy() {
         // TODO Auto-generated method stub
         super.onDestroy();
+
         //util.closeACSUtility();
         LogCat.logToFileFini();
     }

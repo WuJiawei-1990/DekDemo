@@ -298,6 +298,7 @@ public class MainActivity extends AppCompatActivity {
         //初始化数据库
         initDateBase();
         initView();
+        util = new ACSUtility(this, userCallback);//实例化 ACSUtility
         //隐私协议
         if (!getAgreementStatus()){
             showAgreementDialog();
@@ -313,6 +314,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // TODO Auto-generated method stub
         super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "onActivityResult: ");
         if (requestCode == REQUEST_ENUM_PORTS && resultCode == Activity.RESULT_OK) {
             Bundle bundle = data.getExtras();
             BluetoothDevice device = bundle.getParcelable(BluetoothDevice.EXTRA_DEVICE);
@@ -343,8 +345,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
+        //传递activity实现的callback：wjw
+        util.getCallBack(userCallback);
         port_name = findViewById(R.id.port_name);
-        util = new ACSUtility(this, userCallback);//实例化 ACSUtility
+        //util = new ACSUtility(this, userCallback);//实例化 ACSUtility
         final BluetoothManager bluetoothManager =
                 (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         if (bluetoothManager != null)
@@ -546,7 +550,7 @@ public class MainActivity extends AppCompatActivity {
                     .onPositive(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            util.closeACSUtility();
+                            //util.closeACSUtility();
                             finish();//结束当前Activity
                             finishActivity(REQUEST_ENABLE_BT);
                         }

@@ -67,9 +67,9 @@ public class ACSUtility extends Object{
     }
     //解绑:wjw
     public void unBindService(Context context){
-        Log.d(tag, "unBindService() ");
         if (isConnect){
             context.unbindService(conn);
+            Log.d(tag, "unBindService() ");
             isConnect = false;
         }
     }
@@ -254,7 +254,6 @@ public class ACSUtility extends Object{
             context.unbindService(conn);
             isConnect = false;
         }
-
         Intent intent = new Intent();
         intent.setClass(context, ACSUtilityService.class);
         context.stopService(intent);
@@ -323,6 +322,11 @@ public class ACSUtility extends Object{
         for (int i = 0; i < realLength; i++) {
             to[i+toIndex] = from[i+fromIndex];
         }
+    }
+
+    //传递MainActivity的callback
+    public void getCallBack(IACSUtilityCallback userCallback){
+        this.userCallback = userCallback;
     }
 
     //线程定时类

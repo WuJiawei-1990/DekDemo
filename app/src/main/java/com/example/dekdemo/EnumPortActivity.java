@@ -69,6 +69,7 @@ public class EnumPortActivity extends AppCompatActivity {
         @Override
         public void didOpenPort(blePort port, Boolean bSuccess) {
             // TODO Auto-generated method stub
+            Log.d(TAG, "didOpenPort: ");
 
         }
 
@@ -114,7 +115,6 @@ public class EnumPortActivity extends AppCompatActivity {
         mEmptyList = (TextView) findViewById(R.id.empty);
         Button cancelButton = (Button) findViewById(R.id.btn_cancel);
         utility = new ACSUtility(this, userCallback);//实例化ACSUtility
-
         utilAvaliable = false;
 
         cancelButton.setOnClickListener(new OnClickListener() {

@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +23,7 @@ import com.example.dekdemo.fruitsMeasure.appleMeasure;
  * Use the {@link startFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class startFragment extends Fragment {
+public class startFragment extends Fragment{
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -33,7 +34,7 @@ public class startFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private RelativeLayout test;
-    public static Fragment mAppleMeasureFragment = new appleMeasure();
+    public  Fragment mAppleMeasureFragment;
     private RelativeLayout appleMeasure;
     private LinearLayout backToStartFragment;
     public startFragment() {
@@ -65,6 +66,7 @@ public class startFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        mAppleMeasureFragment = new appleMeasure(iAppleMeasure);
     }
 
     @Override
@@ -95,4 +97,13 @@ public class startFragment extends Fragment {
             }
         });
     }
+    com.example.dekdemo.fruitsMeasure.appleMeasure.IAppleMeasure iAppleMeasure = new appleMeasure.IAppleMeasure() {
+        @Override
+        public void removeFragment() {
+            FragmentManager fragmentManager = getChildFragmentManager();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.remove(mAppleMeasureFragment);
+            transaction.commit();
+        }
+    };
 }

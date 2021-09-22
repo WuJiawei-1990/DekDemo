@@ -43,7 +43,6 @@ import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static com.example.dekdemo.ui.startMeasure.startFragment.mAppleMeasureFragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -74,9 +73,12 @@ public class appleMeasure extends Fragment {
     private ResultListViewAdapter resultListViewAdapter;
     private DateBaseHelper dateBaseHelper;
     private SQLiteDatabase db_write,db_read;
-
+    public IAppleMeasure iAppleMeasure;
     public appleMeasure() {
         // Required empty public constructor
+    }
+    public appleMeasure(IAppleMeasure iAppleMeasure){
+        this.iAppleMeasure = iAppleMeasure;
     }
     private ArrayList arrayList = getDate();
     private ArrayList getDate(){
@@ -176,10 +178,7 @@ public class appleMeasure extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d("appleMeasure","返回触发");
-                    FragmentManager fragmentManager = getFragmentManager();
-                    FragmentTransaction transaction = fragmentManager.beginTransaction();
-                    transaction.remove(mAppleMeasureFragment);
-                    transaction.commit();
+                iAppleMeasure.removeFragment();
             }
         });
     }
@@ -305,5 +304,9 @@ public class appleMeasure extends Fragment {
         temp[2] = (byte) (date>>8<<16);
         temp[3] = (byte) (date<<24);
        // temp[5] = '}';
+    }
+
+    public interface IAppleMeasure{
+        void removeFragment();
     }
 }

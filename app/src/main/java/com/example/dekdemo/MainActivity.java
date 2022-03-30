@@ -203,68 +203,83 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void didPackageReceived(ACSUtility.blePort port, byte[] packageToSend) {
-            //后续需添加线程定时
-            if (!StartFlag) {
-                if (packageToSend[0] == '{') {
-                    StartFlag = true;
-                    for (int i = 0; i < packageToSend.length; i++) {
-                        DataReceived[RcvIndex] = packageToSend[i];
-                        RcvIndex++;
-                    }
-                }
-            } else {
-                for (int i = 0; i < packageToSend.length; i++) {
-                    DataReceived[RcvIndex] = packageToSend[i];
-                    RcvIndex++;
-                    if (RcvIndex == DataRcvNum) {
-                        FinishFlag = true;
-                        StartFlag = false;
-                    }
-                }
-            }
-
-            if (FinishFlag) {
-                if (DataReceived[RcvIndex - 1] == '}') {
-                    byte XORCheck = 0;
-                    for (int i = 1; i < RcvIndex - 2; i++) {
-                        XORCheck ^= DataReceived[i];
-                    }
-                    if (XORCheck == DataReceived[RcvIndex - 2]) {
-                        for (int i = 0; i < PixelNum; i++) {
-                            SpectraData[i] = BitConverter.ToInt32(DataReceived, i * 4 + 1);
-
-                            //为了模型稳定性
-                            SpectraData[i] = SpectraData[i]>>7;
-                            SpectraData[i] = SpectraData[i]<<7;
-                        }
-                        //TODO 添加模型
-                        PreTSS = ModelMLR.PredictTSS(SpectraData);
-                        if (PreTSS < 8)
-                            TssToShow = "Low";
-                        else if (PreTSS >= 8 && PreTSS < 10)
-                            TssToShow = (PreTSS + "").substring(0, 3);
-                        else if (PreTSS >= 10 && PreTSS < 20)
-                            TssToShow = (PreTSS + "").substring(0, 4);
-                        else
-                            TssToShow = "High";
-                        //传递糖度值
-                        Message msg = new Message();
-                        msg.what = 2;
-                        msg.obj = TssToShow;
-                        resultHandler.sendMessage(msg);
-                        //添加至数据库
-                        addSQL((String) msg.obj);
-                        //通知历史记录界面更新
-                        Message msgHistory = new Message();
-                        msgHistory.what = 3;
-                        msgHistory.obj = TssToShow;
-                        historyHandler.sendMessage(msgHistory);
-                        //runOnUiThread(() -> updateUiObject());wjw
-                    }
-                }
-                FinishFlag = false;
-                RcvIndex = 0;
-            }
+//            //后续需添加线程定时
+//            if (!StartFlag) {
+//                if (packageToSend[0] == '{') {
+//                    StartFlag = true;
+//                    for (int i = 0; i < packageToSend.length; i++) {
+//                        DataReceived[RcvIndex] = packageToSend[i];
+//                        RcvIndex++;
+//                    }
+//                }
+//            } else {
+//                for (int i = 0; i < packageToSend.length; i++) {
+//                    DataReceived[RcvIndex] = packageToSend[i];
+//                    RcvIndex++;
+//                    if (RcvIndex == DataRcvNum) {
+//                        FinishFlag = true;
+//                        StartFlag = false;
+//                    }
+//                }
+//            }
+//
+//            if (FinishFlag) {
+//                if (DataReceived[RcvIndex - 1] == '}') {
+//                    byte XORCheck = 0;
+//                    for (int i = 1; i < RcvIndex - 2; i++) {
+//                        XORCheck ^= DataReceived[i];
+//                    }
+//                    if (XORCheck == DataReceived[RcvIndex - 2]) {
+//                        for (int i = 0; i < PixelNum; i++) {
+//                            SpectraData[i] = BitConverter.ToInt32(DataReceived, i * 4 + 1);
+//
+//                            //为了模型稳定性
+//                            SpectraData[i] = SpectraData[i]>>7;
+//                            SpectraData[i] = SpectraData[i]<<7;
+//                        }
+//                        //TODO 添加模型
+//                        PreTSS = ModelMLR.PredictTSS(SpectraData);
+//                        if (PreTSS < 8)
+//                            TssToShow = "Low";
+//                        else if (PreTSS >= 8 && PreTSS < 10)
+//                            TssToShow = (PreTSS + "").substring(0, 3);
+//                        else if (PreTSS >= 10 && PreTSS < 20)
+//                            TssToShow = (PreTSS + "").substring(0, 4);
+//                        else
+//                            TssToShow = "High";
+//                        //传递糖度值
+//                        Message msg = new Message();
+//                        msg.what = 2;
+//                        msg.obj = TssToShow;
+//                        resultHandler.sendMessage(msg);
+//                        //添加至数据库
+//                        addSQL((String) msg.obj);
+//                        //通知历史记录界面更新
+//                        Message msgHistory = new Message();
+//                        msgHistory.what = 3;
+//                        msgHistory.obj = TssToShow;
+//                        historyHandler.sendMessage(msgHistory);
+//                        //runOnUiThread(() -> updateUiObject());wjw
+//                    }
+//                }
+//                FinishFlag = false;
+//                RcvIndex = 0;
+//            }
+            String s = new String(packageToSend);
+            float f = Float.parseFloat(s);
+            TssToShow = Float.toString(f);
+            //传递糖度值
+            Message msg = new Message();
+            msg.what = 2;
+            msg.obj = TssToShow;
+            resultHandler.sendMessage(msg);
+            //添加至数据库
+            addSQL((String) msg.obj);
+            //通知历史记录界面更新
+            Message msgHistory = new Message();
+            msgHistory.what = 3;
+            msgHistory.obj = TssToShow;
+            historyHandler.sendMessage(msgHistory);
         }
 
         @Override

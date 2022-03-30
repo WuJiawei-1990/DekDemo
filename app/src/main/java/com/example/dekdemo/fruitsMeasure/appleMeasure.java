@@ -152,6 +152,23 @@ public class appleMeasure extends Fragment {
                 //发送光谱计开启信号
                 sendData("s");
                 progressDialog().show();
+//                //连续50次测试
+//                new Thread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Looper.prepare();
+//                        for (int i = 0 ; i<50 ; i++){
+//                            sendData("s");
+//                            progressDialog().show();
+//                            try {
+//                                Thread.sleep(5000);
+//                            } catch (InterruptedException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                        Looper.loop();
+//                    }
+//                }).start();
 //                TimerTask timerTask = new TimerTask() {
 //                    @Override
 //                    public void run() {
@@ -198,9 +215,9 @@ public class appleMeasure extends Fragment {
                     }
                     if (msg.obj != null && msg.obj.toString() != "High" && msg.obj.toString() != "Low"){
                         rotateAnimation(point,Float.valueOf(msg.obj.toString()));
-                    }else if (msg.obj.toString() == "Low"){
+                    }else if (msg.obj != null && msg.obj.toString() == "Low"){
                         rotateAnimation(point,0f);
-                    }else if (msg.obj.toString() == "High"){
+                    }else if (msg.obj != null && msg.obj.toString() == "High"){
                         rotateAnimation(point,20f);
                     }
             }

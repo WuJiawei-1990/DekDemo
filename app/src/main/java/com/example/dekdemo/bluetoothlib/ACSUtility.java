@@ -13,6 +13,8 @@ import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
 
+import com.example.dekdemo.Spectra.BitConverter;
+
 import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
